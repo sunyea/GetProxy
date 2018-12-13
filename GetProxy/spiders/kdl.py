@@ -9,6 +9,20 @@ class KdlSpider(scrapy.Spider):
     start_urls = ['https://www.kuaidaili.com/free/']
 
     def parse(self, response):
+        page_lists = response.xpath('//*[@id="listnav"]/ul/li')
+        max_page = 1
+        for page in page_lists:
+            num = page.xpath('.//a/text()').extract_first()
+            if num:
+                max_page = num
+        print('最大页数：{}'.format(max_page))
+        for index in range(1, 1):
+            url = 'https://www.kuaidaili.com/free/{}'.format(index)
+            yield scrapy.Request(url=url, meta={'page': index}, callback=self.get_data, dont_filter=True)
+
+
+
+    def get_data(self, response):
         proxy_lists = response.xpath('//*[@id="list"]/table/tbody/tr')
         for proxy in proxy_lists:
             item = GetproxyItem()
@@ -19,4 +33,3 @@ class KdlSpider(scrapy.Spider):
             item['speed'] = proxy.xpath('.//td[6]/text()').extract_first()
             item['lastcheck'] = proxy.xpath('.//td[7]/text()').extract_first()
             yield item
-        return None
