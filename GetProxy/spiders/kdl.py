@@ -16,8 +16,8 @@ class KdlSpider(scrapy.Spider):
             if num:
                 max_page = num
         print('最大页数：{}'.format(max_page))
-        for index in range(1, 1):
-            url = 'https://www.kuaidaili.com/free/{}'.format(index)
+        for index in range(1, int(max_page)):
+            url = 'https://www.kuaidaili.com/free/inha/{}/'.format(index)
             yield scrapy.Request(url=url, meta={'page': index}, callback=self.get_data, dont_filter=True)
 
 
